@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование нагрузки</title>
+    <link rel="stylesheet" href="/styles/219-edit-form.css">
+</head>
+<body>
+    <header>
+        <div class="button">
+            <a class="button__link" th:href="@{/}">В главное меню</a>
+        </div>
+        <div class="header__title">Редактирование нагрузки</div>
+    </header>
+
+    <main>
+        <h1>Текущая нагрузка</h1>
+        <form class="main__create-form" id="firstForm" method="post" th:action="@{/class-room/number/219/load-info/{classRoom219LoadInfoId}/edit(classRoom219LoadInfoId=${classRoom219LoadInfo.getId()})}">
+            <input type="hidden" name="_method" value="PUT">
+            <div>
+                <label for="localDate">Дата:</label>
+                <input type="date" name="localDate" id="localDate" th:value="${payload?.localDate() == null ? classRoom219LoadInfo?.getLocalDate() : payload?.localDate()}">
+                <div th:if="${errors != null && errors.containsKey('localDate')}">
+                    <label class="label-error" th:text="${errors.get('localDate')}"></label>
+                </div>
+            </div>
+            <div>
+                <label for="localTime">Время:</label>
+                <input type="time" name="localTime" id="localTime" th:value="${payload?.localTime() == null ? classRoom219LoadInfo?.getLocalTime() : payload?.localTime()}">
+                <div th:if="${errors != null && errors.containsKey('localTime')}">
+                    <label class="label-error" th:text="${errors.get('localTime')}"></label>
+                </div>
+            </div>
+            <div>
+                <label for="type">Тип:</label>
+                <input type="text" name="type" id="type" th:value="${payload?.type() == null ? classRoom219LoadInfo?.getType() : payload?.type()}">
+                <div th:if="${errors != null && errors.containsKey('type')}">
+                    <label class="label-error" th:text="${errors.get('type')}"></label>
+                </div>
+            </div>
+            <div>
+                <label for="responsible">Ответственный: </label>
+                <input type="text" name="responsible" id="responsible" th:value="${payload?.responsible() == null ? classRoom219LoadInfo?.getResponsible() : payload?.responsible()}">
+                <div th:if="${errors != null && errors.containsKey('responsible')}">
+                    <label class="label-error" th:text="${errors.get('responsible')}"></label>
+                </div>
+            </div>
+            <div>
+                <label for="description">Комментарий:</label>
+                <textarea name="description" id="description" th:text="${payload?.description() == null ? classRoom219LoadInfo?.getDescription() : payload?.description()}"></textarea>
+                <div th:if="${errors != null && errors.containsKey('description')}">
+                    <label class="label-error" th:text="${errors.get('description')}"></label>
+                </div>
+            </div>
+            <button class="button create-form__button" type="submit">Сохранить изменения</button>
+        </form>
+        <form method="post" id="delete-form" th:action="@{/class-room/number/219/load-info/{classRoom219LoadInfoId}/delete(classRoom219LoadInfoId=${classRoom219LoadInfo.getId()})}">
+            <input type="hidden" name="_method" value="DELETE">
+            <input class="delete-form" type="date" name="localDate"
+                   th:value="${payload?.localDate() == null ? classRoom219LoadInfo?.getLocalDate() : payload?.localDate()}">
+            <input class="delete-form" type="time" name="localTime" th:value="${payload?.localTime() == null ? classRoom219LoadInfo?.getLocalTime() : payload?.localTime()}">
+            <input class="delete-form" name="type" th:value="${payload?.type() == null ? classRoom219LoadInfo?.getType() : payload?.type()}">
+            <input class="delete-form" name="responsible" th:value="${payload?.responsible() == null ? classRoom219LoadInfo?.getResponsible() : payload?.responsible()}">
+            <textarea class="delete-form" name="description" th:text="${payload?.description() == null ? classRoom219LoadInfo?.getDescription() : payload?.description()}"></textarea>
+            <button class="button create-form__button" type="submit">Удалить нагрузку</button>
+        </form>
+        <div class="button button--edit-form-margin-top">
+            <a class="button__link" th:href="@{/class-room/number/219/loads-info/list(startDate=${session.get('startDate')},endDate=${session.get('endDate')})}">Назад</a>
+        </div>
+
+        <div id="dialog" class="dialog-overlay" th:if="${showAuthorizationDialog}">
+            <div class="dialog-content">
+                <h2>Авторизация</h2>
+                <form id="loginForm" th:method="${_method}"
+                      th:action="@{|/class-room/number/219/load-info/${classRoom219LoadInfo.getId()}/${_method == 'PUT' ? 'edit' : 'delete'}|}">
+                    <div>
+                        <label for="username">Логин:</label>
+                        <input type="text" id="username" name="username" required></div>
+                    <div>
+                        <label for="password">Пароль:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div th:if="${authError}">
+                        <label class="label-error">Неверно введены логин или пароль</label>
+                    </div>
+                    <div class="login-form__buttons">
+                        <button class="button create-form__button" type="submit">Ок</button>
+                        <button class="button create-form__button" type="button" onclick="closeDialog()">Отмена</button>
+                    </div>
+                </form>
+            </div>
+            <script th:inline="javascript" src="/scripts/219-create-form.js"></script>
+        </div>
+    </main>
+
+    <footer>
+        Copyright © 2024 | Все права защищены, Поддержка веб-сервиса <a class="footer__link--cit-site" href="https://cit.vstu.by/">cit.vstu.by</a>
+    </footer>
+    <script src="/scripts/219-create-form-first-form.js"></script>
+</body>
+</html>

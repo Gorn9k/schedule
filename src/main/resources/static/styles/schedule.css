@@ -1,0 +1,178 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    margin: auto
+}
+
+header {
+    background: #434c63;
+    height: 10vh;
+    display: flex;
+    align-items: center
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    height: 80vh
+}
+
+footer {
+    height: 10vh;
+    color: #B8B8B8;
+    text-align: center;
+    align-content: center
+}
+
+header, main, footer {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.footer__link--cit-site {
+    color: #434C63;
+}
+
+.button {
+    background: #353f57;
+    border: 1px;
+    border-radius: 7px;
+    text-align: center
+}
+
+.button__link {
+    color: #FFFFFF;
+    display: block;
+    font-size: 20px;
+    padding: 10px
+}
+
+.header__title {
+    font-size: 30px;
+    text-align: center;
+    color: #FFFFFF;
+    flex: 1;
+    padding-right: 10%
+}
+
+a {
+    text-decoration: none;
+    color: #434c63
+}
+
+.main__date-period-container {
+    margin: 15px 0 15px;
+    color: #434c63;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center
+}
+
+.main__date-period-container div {
+    display: flex;
+    align-items: baseline
+}
+
+.main__date-period-container div a {
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.main__date-period-container div div {
+    padding: 5px;
+    border: 1px solid #E2E8F0;
+    border-radius: 10px;
+    margin: 5px 10px
+}
+
+.main__table-schedule-container {
+    overflow: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column
+}
+
+.table-schedule-container__table-header-container {
+    padding-right: 5px
+}
+
+.table-header-container__table-header {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    overflow: hidden
+}
+
+.table-header__header {
+    font-size: 18px;
+    background: #434C63;
+    color: #FFFFFF
+}
+
+.table-schedule-container__table-body-container {
+    overflow: auto;
+    flex: 1
+}
+
+.table-body__body {
+    color: #434c63
+}
+
+.table-body__body--no-content {
+    background: #EFEFEF;
+    border: 1px solid #E2E8F0
+}
+
+.tr__td--schedule {
+    padding: 0
+}
+
+.td--schedule__schedule-content--mono {
+    padding: 10px
+}
+
+.td--schedule__schedule-content--flex {
+    border-top: 1px solid #E2E8F0;
+    padding: 10px
+}
+
+table {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.table-body-container__table-body--no-content {
+    height: 100%
+}
+
+.table-body-container__table-body--margin-bottom {
+    margin-bottom: 1px
+}
+
+table, th, td {
+    border: 1px solid #E2E8F0
+}
+
+td, th {
+    word-wrap: break-word;
+    padding: 10px;
+    text-align: center;
+}
+
+.tr__day-of-week-td, .tr__lesson-time-td {
+    width: 10%;
+}
+
+::-webkit-scrollbar {
+    width: 5px
+}
+
+::-webkit-scrollbar-thumb {
+    background: #495471;
+    border-radius: 5px
+}

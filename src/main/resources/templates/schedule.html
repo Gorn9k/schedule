@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${frame == 'FIRST' ? 'Расписание аудиторий(ЦИТ) в первом учебном корпусе' : 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе'}"></title>
+    <link rel="stylesheet" href="/styles/schedule.css">
+</head>
+<body>
+    <header>
+        <div class="button">
+            <a class="button__link" th:href="@{/}">В главное меню</a>
+        </div>
+        <div class="header__title" th:text="${frame == 'FIRST' ? 'Расписание аудиторий(ЦИТ) в первом учебном корпусе' : 'Расписание аудиторий(ЦИТ) в четвертом учебном корпусе'}"></div>
+    </header>
+
+    <main>
+        <div class="main__date-period-container">
+            Период занятий
+            <div>
+                <a id="prev" href="/schedule?"><<</a>
+                <div id="current"></div>
+                <a id="next" href="/schedule?">>></a>
+            </div>
+        </div>
+
+        <div class="main__table-schedule-container">
+            <div class="table-schedule-container__table-header-container" id="table-header-container">
+                <table class="table-header-container__table-header">
+                    <thead class="table-header__header">
+                        <tr>
+                            <th rowspan="2" class="tr__day-of-week-td">День недели</th>
+                            <th rowspan="2" class="tr__lesson-time-td">Время занятия</th>
+                            <th th:colspan="${classes.size()}">Номер аудитории</th>
+                        </tr>
+                        <tr>
+                            <th th:each="classNumber : ${classes}" th:text="${classNumber}"></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            <div class="table-schedule-container__table-body-container" id="table-body-container">
+                <table class="table-body-container__table-body--no-content" th:if="${scheduleMap.isEmpty()}">
+                    <tbody class="table-body__body table-body__body--no-content">
+                        <tr>
+                            <td colspan="6" >
+                                На этой неделе нету пар!
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table-body-container__table-body--margin-bottom" id="schedule-table" th:unless="${scheduleMap.isEmpty()}">
+                    <tbody class="table-body__body">
+                        <tr th:each="dl : ${scheduleMap.keySet()}">
+                            <td class="tr__day-of-week-td" th:if="${dl.day().equals(0)}">Понедельник</td>
+                            <td class="tr__day-of-week-td" th:if="${dl.day().equals(1)}">Вторник</td>
+                            <td class="tr__day-of-week-td" th:if="${dl.day().equals(2)}">Среда</td>
+                            <td class="tr__day-of-week-td" th:if="${dl.day().equals(3)}">Четверг</td>
+                            <td class="tr__day-of-week-td" th:if="${dl.day().equals(4)}">Пятница</td>
+                            <td class="tr__day-of-week-td" th:if="${dl.day().equals(5)}">Суббота</td>
+                            <td class="tr__day-of-week-td" th:if="${dl.day().equals(6)}">Воскресенье</td>
+                            <td class="tr__lesson-time-td" th:if="${dl.lessonNumber().equals(1)}">08.00-09.35</td>
+                            <td class="tr__lesson-time-td" th:if="${dl.lessonNumber().equals(2)}">09.50-11.25</td>
+                            <td class="tr__lesson-time-td" th:if="${dl.lessonNumber().equals(3)}">11.40-13.15</td>
+                            <td class="tr__lesson-time-td" th:if="${dl.lessonNumber().equals(4)}">14.00-15.35</td>
+                            <td class="tr__lesson-time-td" th:if="${dl.lessonNumber().equals(5)}">15.45-17.20</td>
+                            <td class="tr__lesson-time-td" th:if="${dl.lessonNumber().equals(6)}">17.30-19.05</td>
+                            <td class="tr__lesson-time-td" th:if="${dl.lessonNumber().equals(7)}">19.15-20.50</td>
+                            <td class="tr__td--schedule" th:each="classNumber : ${classes}">
+                                <div class="td--schedule__schedule-content--mono" th:each="schedule : ${scheduleMap.get(dl).get(classNumber)}" th:unless="${scheduleStat.index > 0}">
+                                    <label th:text="${schedule.disciplineName()}"></label><br>
+                                    <label th:text="${schedule.teacherFullName()}"></label><br>
+                                    <label th:text="${schedule.group()}"></label><br>
+                                </div>
+                                <div class="td--schedule__schedule-content--flex" th:each="schedule : ${scheduleMap.get(dl).get(classNumber)}" th:if="${scheduleStat.index > 0}">
+                                    <label th:text="${schedule.disciplineName()}"></label><br>
+                                    <label th:text="${schedule.teacherFullName()}"></label><br>
+                                    <label th:text="${schedule.group()}"></label><br>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Copyright © 2024 | Все права защищены, Поддержка веб-сервиса <a class="footer__link--cit-site" href="https://cit.vstu.by/">cit.vstu.by</a>
+    </footer>
+    <script th:inline="javascript">
+        var startDateString = /*[[${startDate}]]*/'';
+        var endDateString = /*[[${endDate}]]*/'';
+        var frame = /*[[${frame}]]*/'';
+    </script>
+    <script src="/scripts/schedule.js"></script>
+</body>
+</html>
