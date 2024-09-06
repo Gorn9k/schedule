@@ -176,3 +176,7 @@ td, th {
     background: #495471;
     border-radius: 5px
 }
+
+.background {
+    background: #f1f1f1;
+}

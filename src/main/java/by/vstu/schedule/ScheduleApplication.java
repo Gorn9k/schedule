@@ -12,11 +12,16 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Map;
 
@@ -51,28 +56,35 @@ public class ScheduleApplication {
     }
 
     @Bean
-    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-        return new HiddenHttpMethodFilter();
-    }
-
-    @Bean
     public BasicAuthorizationFilter basicAuthorizationFilter(@Value("${spring.security.user.name}") final String username, @Value("${spring.security.user.password}") final String password) {
         return new BasicAuthorizationFilter(username, password);
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                   HiddenHttpMethodFilter hiddenHttpMethodFilter,
-                                                   BasicAuthorizationFilter basicAuthorizationFilter
-    ) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, BasicAuthorizationFilter basicAuthorizationFilter) throws Exception {
         return http
+                .cors(cors -> corsConfigurer())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers(HttpMethod.POST).authenticated()
                         .requestMatchers(HttpMethod.PUT).authenticated()
                         .requestMatchers(HttpMethod.DELETE).authenticated()
                         .anyRequest().permitAll())
                 .addFilterBefore(basicAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(hiddenHttpMethodFilter, BasicAuthorizationFilter.class)
                 .build();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:3000")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .maxAge(3600);
+            }
+        };
     }
 }

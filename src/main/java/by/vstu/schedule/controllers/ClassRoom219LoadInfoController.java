@@ -24,7 +24,7 @@ import java.util.Map;
 
 import static by.vstu.schedule.services.DateService.FRONT_TIME_FORMAT;
 
-@Controller
+@RestController
 @RequestMapping("/class-room/number/219/load-info/{classRoom219LoadInfoId:\\d+}")
 @RequiredArgsConstructor
 public class ClassRoom219LoadInfoController {
@@ -38,11 +38,10 @@ public class ClassRoom219LoadInfoController {
     private final MessageSource messageSource;
 
     @GetMapping
-    @CrossOrigin
     public ResponseEntity<Schedule219> getClassRoom219LoadInfo(@PathVariable("classRoom219LoadInfoId") Integer classRoom219LoadInfoId) {
         ClassRoom219LoadInfo classRoom219LoadInfo = classRoom219LoadInfoService.getClassRoom219LoadInfoById(classRoom219LoadInfoId);
         return ResponseEntity.ok(new Schedule219(classRoom219LoadInfo.getId(),
-                classRoom219LoadInfo.getLocalDate().getDayOfWeek().getValue() - 1,
+                classRoom219LoadInfo.getLocalDate(),
                 classRoom219LoadInfo.getLocalTime().format(FRONT_TIME_FORMAT),
                 classRoom219LoadInfo.getType(),
                 classRoom219LoadInfo.getResponsible(),
@@ -50,13 +49,10 @@ public class ClassRoom219LoadInfoController {
     }
 
     @PutMapping("edit")
-    @CrossOrigin
-    public ResponseEntity<?> updateClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@ModelAttribute(value = "classRoom219LoadInfo", binding = false)
-                                                                                       ClassRoom219LoadInfo classRoom219LoadInfo,
-                                                                                   @Valid UpdateClassRoom219LoadInfo payload,
-                                                                                   BindingResult bindingResult,
-                                                                                   @Value("${chat.id}") String chatId,
-                                                                                   Locale locale) {
+    public ResponseEntity<?> updateClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@Valid @RequestBody UpdateClassRoom219LoadInfo payload,
+                                                                                              BindingResult bindingResult,
+                                                                                              @Value("${chat.id}") String chatId,
+                                                                                              Locale locale) {
         if (bindingResult.hasErrors()) {
             Map<String, String> field_error_map = new HashMap<>();
             bindingResult.getFieldErrors().forEach(fieldError ->
@@ -67,6 +63,7 @@ public class ClassRoom219LoadInfoController {
                             locale)));
             return ResponseEntity.badRequest().body(field_error_map);
         }
+        ClassRoom219LoadInfo classRoom219LoadInfo = classRoom219LoadInfoService.getClassRoom219LoadInfoById(payload.id());
         String message = String.format("""
                         Только что была обновлена нагрузка на 219 аудиторию.
                         Старая нагрузка:
@@ -99,7 +96,6 @@ public class ClassRoom219LoadInfoController {
     }
 
     @DeleteMapping("delete")
-    @CrossOrigin
     public ResponseEntity<Void> deleteClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@ModelAttribute("classRoom219LoadInfo") ClassRoom219LoadInfo classRoom219LoadInfo,
                                                                                    @Value("${chat.id}") String chatId) {
         classRoom219LoadInfoService.deleteClassRoom219LoadInfo(classRoom219LoadInfo);

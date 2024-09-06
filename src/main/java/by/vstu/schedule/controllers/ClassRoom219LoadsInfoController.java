@@ -41,13 +41,12 @@ public class ClassRoom219LoadsInfoController {
     private final MessageSource messageSource;
 
     @GetMapping("list")
-    @CrossOrigin
     public ResponseEntity<List<Schedule219>> getClassRooms219LoadInfoPage(@RequestParam String startDate,
                                                                           @RequestParam String endDate) {
         return ResponseEntity.ok(classRoom219LoadInfoService.getClassRoom219LoadsInfoByStartDateAndEndDate(LocalDate.parse(startDate),
                 LocalDate.parse(endDate)).stream().map(classRoom219LoadInfo ->
                 new Schedule219(classRoom219LoadInfo.getId(),
-                        classRoom219LoadInfo.getLocalDate().getDayOfWeek().getValue() - 1,
+                        classRoom219LoadInfo.getLocalDate(),
                         classRoom219LoadInfo.getLocalTime().format(FRONT_TIME_FORMAT),
                         classRoom219LoadInfo.getType(),
                         classRoom219LoadInfo.getResponsible(),
@@ -55,7 +54,6 @@ public class ClassRoom219LoadsInfoController {
     }
 
     @PostMapping("create")
-    @CrossOrigin
     public ResponseEntity<?> createClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@Valid NewClassRoom219LoadInfo payload,
                                                                                               BindingResult bindingResult,
                                                                                               @Value("${chat.id}") String chatId,

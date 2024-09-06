@@ -50,7 +50,7 @@
                 </table>
                 <table class="table-body-container__table-body--margin-bottom" id="schedule-table" th:unless="${scheduleMap.isEmpty()}">
                     <tbody class="table-body__body">
-                        <tr th:each="dl : ${scheduleMap.keySet()}">
+                        <tr th:each="dl : ${scheduleMap.keySet()}" th:class="${dl.day() % 2 != 0 ? 'background' : ''}">
                             <td class="tr__day-of-week-td" th:if="${dl.day().equals(0)}">Понедельник</td>
                             <td class="tr__day-of-week-td" th:if="${dl.day().equals(1)}">Вторник</td>
                             <td class="tr__day-of-week-td" th:if="${dl.day().equals(2)}">Среда</td>

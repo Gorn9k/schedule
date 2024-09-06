@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record UpdateClassRoom219LoadInfo(
+        @NotNull
+        Integer id,
         @NotNull(message = "{schedule_monitor.update_class_room_219_load_info.update.errors.date_is_null}")
         LocalDate localDate,
         @NotNull(message = "{schedule_monitor.update_class_room_219_load_info.update.errors.time_is_null}")

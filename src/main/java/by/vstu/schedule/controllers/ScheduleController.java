@@ -21,7 +21,6 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @GetMapping
-    @CrossOrigin
     public Map<String, Map<String, List<Schedule>>> getSchedulePage(@RequestParam String startDate,
                                                                     @RequestParam String endDate,
                                                                     @RequestParam String frame) {
