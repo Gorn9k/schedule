@@ -79,39 +79,39 @@ public class ClassRoom219LoadInfoController {
                 classRoom219LoadInfo.getDescription());
         ClassRoom219LoadInfo updatedClassRoom219LoadInfo = classRoom219LoadInfoService.updateClassRoom219LoadInfo(new ClassRoom219LoadInfo(
                 classRoom219LoadInfo.getId(), payload.localDate(), payload.localTime(), payload.type(), payload.responsible(), payload.description()));
-        telegramBot.sendMessage(Long.valueOf(chatId), message.concat(String.format("""
-                        \nНовая нагрузка:
-                            Дата: %s
-                            Время: %s
-                            Тип: %s
-                            Ответственный: %s
-                            Комментарий: %s""",
-                updatedClassRoom219LoadInfo.getLocalDate(),
-                updatedClassRoom219LoadInfo.getLocalTime(),
-                updatedClassRoom219LoadInfo.getType(),
-                updatedClassRoom219LoadInfo.getResponsible(),
-                updatedClassRoom219LoadInfo.getDescription())));
+//        telegramBot.sendMessage(Long.valueOf(chatId), message.concat(String.format("""
+//                        \nНовая нагрузка:
+//                            Дата: %s
+//                            Время: %s
+//                            Тип: %s
+//                            Ответственный: %s
+//                            Комментарий: %s""",
+//                updatedClassRoom219LoadInfo.getLocalDate(),
+//                updatedClassRoom219LoadInfo.getLocalTime(),
+//                updatedClassRoom219LoadInfo.getType(),
+//                updatedClassRoom219LoadInfo.getResponsible(),
+//                updatedClassRoom219LoadInfo.getDescription())));
         notificationService.updateTask(updatedClassRoom219LoadInfo);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("delete")
-    public ResponseEntity<Void> deleteClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@ModelAttribute("classRoom219LoadInfo") ClassRoom219LoadInfo classRoom219LoadInfo,
-                                                                                   @Value("${chat.id}") String chatId) {
+    public ResponseEntity<Void> deleteClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@PathVariable("classRoom219LoadInfoId") Integer id, @Value("${chat.id}") String chatId) {
+        ClassRoom219LoadInfo classRoom219LoadInfo = classRoom219LoadInfoService.getClassRoom219LoadInfoById(id);
         classRoom219LoadInfoService.deleteClassRoom219LoadInfo(classRoom219LoadInfo);
-        telegramBot.sendMessage(Long.valueOf(chatId), String.format("""
-                        Только что была удалена нагрузка на 219 аудиторию.
-                        Удаленная нагрузка:
-                            Дата: %s
-                            Время: %s
-                            Тип: %s
-                            Ответственный: %s
-                            Комментарий: %s""",
-                classRoom219LoadInfo.getLocalDate(),
-                classRoom219LoadInfo.getLocalTime(),
-                classRoom219LoadInfo.getType(),
-                classRoom219LoadInfo.getResponsible(),
-                classRoom219LoadInfo.getDescription()));
+//        telegramBot.sendMessage(Long.valueOf(chatId), String.format("""
+//                        Только что была удалена нагрузка на 219 аудиторию.
+//                        Удаленная нагрузка:
+//                            Дата: %s
+//                            Время: %s
+//                            Тип: %s
+//                            Ответственный: %s
+//                            Комментарий: %s""",
+//                classRoom219LoadInfo.getLocalDate(),
+//                classRoom219LoadInfo.getLocalTime(),
+//                classRoom219LoadInfo.getType(),
+//                classRoom219LoadInfo.getResponsible(),
+//                classRoom219LoadInfo.getDescription()));
         notificationService.deleteTask(classRoom219LoadInfo.getId());
         return ResponseEntity.noContent().build();
     }

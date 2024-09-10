@@ -54,7 +54,7 @@ public class ClassRoom219LoadsInfoController {
     }
 
     @PostMapping("create")
-    public ResponseEntity<?> createClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@Valid NewClassRoom219LoadInfo payload,
+    public ResponseEntity<?> createClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@RequestBody @Valid NewClassRoom219LoadInfo payload,
                                                                                               BindingResult bindingResult,
                                                                                               @Value("${chat.id}") String chatId,
                                                                                               Locale locale,
@@ -71,19 +71,19 @@ public class ClassRoom219LoadsInfoController {
         }
         ClassRoom219LoadInfo createdClassRoom219LoadInfo = classRoom219LoadInfoService.saveClassRoom219LoadInfo(new ClassRoom219LoadInfo(null,
                 payload.localDate(), payload.localTime(), payload.type(), payload.responsible(), payload.description()));
-        telegramBot.sendMessage(Long.valueOf(chatId), String.format("""
-                        Только что была создана новая нагрузка на 219 аудиторию.
-                        Новая нагрузка:
-                            Дата: %s
-                            Время: %s
-                            Тип: %s
-                            Ответственный: %s
-                            Комментарий: %s""",
-                createdClassRoom219LoadInfo.getLocalDate(),
-                createdClassRoom219LoadInfo.getLocalTime(),
-                createdClassRoom219LoadInfo.getType(),
-                createdClassRoom219LoadInfo.getResponsible(),
-                createdClassRoom219LoadInfo.getDescription()));
+//        telegramBot.sendMessage(Long.valueOf(chatId), String.format("""
+//                        Только что была создана новая нагрузка на 219 аудиторию.
+//                        Новая нагрузка:
+//                            Дата: %s
+//                            Время: %s
+//                            Тип: %s
+//                            Ответственный: %s
+//                            Комментарий: %s""",
+//                createdClassRoom219LoadInfo.getLocalDate(),
+//                createdClassRoom219LoadInfo.getLocalTime(),
+//                createdClassRoom219LoadInfo.getType(),
+//                createdClassRoom219LoadInfo.getResponsible(),
+//                createdClassRoom219LoadInfo.getDescription()));
         notificationService.addTaskIfToday(createdClassRoom219LoadInfo);
         return ResponseEntity.created(URI.create(request.getRequestURI().concat("/")
                 .concat(String.valueOf(createdClassRoom219LoadInfo.getId())))).build();

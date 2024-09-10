@@ -42,17 +42,7 @@ public class BasicAuthorizationFilter extends OncePerRequestFilter {
         if (requestMatcher.matches(request)) {
             final String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Basic ") || isNotValidCredentials(authHeader)) {
-                if (authHeader != null && authHeader.startsWith("Basic ") && isNotValidCredentials(authHeader))
-                    request.setAttribute("authError", true);
-                HttpServletRequest wrappedRequest = new HttpServletRequestWrapper(request) {
-                    @Override
-                    public String getMethod() {
-                        return "GET";
-                    }
-                };
-                RequestDispatcher dispatcher = wrappedRequest.getRequestDispatcher(determineForwardUrl(request));
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                dispatcher.forward(wrappedRequest, response);
+                response.setStatus(403);
                 return;
             }
             User user = new User(username, password, List.of());
