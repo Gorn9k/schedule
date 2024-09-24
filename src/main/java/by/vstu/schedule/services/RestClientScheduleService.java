@@ -2,6 +2,7 @@ package by.vstu.schedule.services;
 
 import by.vstu.schedule.models.DTO.DayOfWeekLessonNumber;
 import by.vstu.schedule.models.DTO.Schedule;
+import by.vstu.schedule.models.DTO.ScheduleResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,15 +22,16 @@ public class RestClientScheduleService implements ScheduleService {
     private final Map<String, String[]> frame_classroomNumbers_Map;
 
     @Override
-    public Map<String, Map<String, List<Schedule>>> getAllScheduleByFrameAndStartDateAndEndDate(String frame,
-                                                                                                               LocalDate startDate,
-                                                                                                               LocalDate endDate) {
+    public ScheduleResponse getAllScheduleByFrameAndStartDateAndEndDate(String frame,
+                                                                        LocalDate startDate,
+                                                                        LocalDate endDate) {
         String[] classes = frame_classroomNumbers_Map.get(switch (frame) {
             case "FIRST" -> "firstFrame";
             case "FOURTH" -> "fourthFrame";
             default -> throw new IllegalStateException("Unexpected value: " + frame);
         });
-        List<Schedule> schedules = this.restClient
+
+        Set<Schedule> schedules = this.restClient
                 .get()
                 .uri(String.format("/api/rooms/byRoomAndDate?weekType=%s,ALWAYS&startDate=%s&endDate=%s&roomNumbers=%s&frame=%s",
                         checkWeekType(startDate),
@@ -40,29 +42,13 @@ public class RestClientScheduleService implements ScheduleService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
-        ObjectMapper objectMapper = new ObjectMapper();
 
-        Map<String, Map<String, List<Schedule>>> responseMap = new LinkedHashMap<>();
-        if (schedules != null && !schedules.isEmpty()) {
-            Set<DayOfWeekLessonNumber> dlrSet = schedules.stream().map(schedule -> new DayOfWeekLessonNumber(schedule.day(),
-                            schedule.lessonNumber()))
-                    .sorted(Comparator.comparing(DayOfWeekLessonNumber::day)
-                    .thenComparing(DayOfWeekLessonNumber::lessonNumber)).collect(Collectors.toCollection(LinkedHashSet::new));
-            for (DayOfWeekLessonNumber dlr : dlrSet) {
-                Map<String, List<Schedule>> map = new HashMap<>();
-                for (String classroomNumber : classes) {
-                    map.put(classroomNumber, schedules.stream().filter(schedule -> schedule.day().equals(dlr.day())
-                                    && schedule.lessonNumber().equals(dlr.lessonNumber()) && schedule.roomNumber().equals(classroomNumber))
-                            .collect(Collectors.toList()));
-                }
-                try {
-                    responseMap.put(objectMapper.writeValueAsString(dlr), map);
-                } catch (Exception ignored) {
-                    return responseMap;
-                }
-            }
-        }
+        schedules = schedules.stream().sorted(Comparator.comparing(Schedule::day)).sorted(Comparator.comparing(Schedule::lessonNumber))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        SortedSet<String> classesNumbers = schedules.stream().map(Schedule::roomNumber).collect(Collectors.toCollection(TreeSet::new));
+        SortedSet<Integer> days = schedules.stream().map(Schedule::day).collect(Collectors.toCollection(TreeSet::new));
+        SortedSet<Integer> lessonsNumbers = schedules.stream().map(Schedule::lessonNumber).collect(Collectors.toCollection(TreeSet::new));
 
-        return responseMap;
+        return new ScheduleResponse(schedules, classesNumbers, days, lessonsNumbers);
     }
 }

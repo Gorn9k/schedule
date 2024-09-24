@@ -88,20 +88,4 @@ public class ClassRoom219LoadsInfoController {
         return ResponseEntity.created(URI.create(request.getRequestURI().concat("/")
                 .concat(String.valueOf(createdClassRoom219LoadInfo.getId())))).build();
     }
-
-    @ExceptionHandler(Exception.class)
-    public String redirectToClassRooms219LoadInfoPage(Exception exception, HttpSession httpSession) {
-        System.out.println(exception.getMessage());
-        exception.printStackTrace();
-        Object startDate = httpSession.getAttribute("startDate");
-        Object endDate = httpSession.getAttribute("endDate");
-        String redirectUrl = "redirect:/class-room/number/219/loads-info/list?startDate=%s&&endDate=%s";
-        if (startDate == null && endDate == null) {
-            LocalDate[] datePeriod = DateService.evaluateDatePeriod();
-            return String.format(redirectUrl,
-                    datePeriod[0],
-                    datePeriod[1]);
-        }
-        return String.format(redirectUrl, startDate, endDate);
-    }
 }
