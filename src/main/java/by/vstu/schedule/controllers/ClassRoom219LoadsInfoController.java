@@ -70,7 +70,7 @@ public class ClassRoom219LoadsInfoController {
             return ResponseEntity.badRequest().body(field_error_map);
         }
         ClassRoom219LoadInfo createdClassRoom219LoadInfo = classRoom219LoadInfoService.saveClassRoom219LoadInfo(new ClassRoom219LoadInfo(null,
-                payload.localDate(), payload.localTime(), payload.type(), payload.responsible(), payload.description()));
+                payload.date(), payload.time(), payload.type(), payload.responsible(), payload.description()));
 //        telegramBot.sendMessage(Long.valueOf(chatId), String.format("""
 //                        Только что была создана новая нагрузка на 219 аудиторию.
 //                        Новая нагрузка:

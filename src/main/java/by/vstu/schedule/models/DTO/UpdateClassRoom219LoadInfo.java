@@ -11,9 +11,9 @@ public record UpdateClassRoom219LoadInfo(
         @NotNull
         Integer id,
         @NotNull(message = "{schedule_monitor.update_class_room_219_load_info.update.errors.date_is_null}")
-        LocalDate localDate,
+        LocalDate date,
         @NotNull(message = "{schedule_monitor.update_class_room_219_load_info.update.errors.time_is_null}")
-        LocalTime localTime,
+        LocalTime time,
         @NotBlank(message = "{schedule_monitor.update_class_room_219_load_info.update.errors.type_is_blank}")
         @Size(max = 60, message = "{schedule_monitor.update_class_room_219_load_info.update.errors.type_size_is_invalid}")
         String type,

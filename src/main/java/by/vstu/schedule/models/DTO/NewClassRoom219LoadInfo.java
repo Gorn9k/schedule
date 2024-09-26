@@ -9,9 +9,9 @@ import java.time.LocalTime;
 
 public record NewClassRoom219LoadInfo(
         @NotNull(message = "{schedule_monitor.new_class_room_219_load_info.create.errors.date_is_null}")
-        LocalDate localDate,
+        LocalDate date,
         @NotNull(message = "{schedule_monitor.new_class_room_219_load_info.create.errors.time_is_null}")
-        LocalTime localTime,
+        LocalTime time,
         @NotBlank(message = "{schedule_monitor.new_class_room_219_load_info.create.errors.type_is_blank}")
         @Size(max = 60, message = "{schedule_monitor.new_class_room_219_load_info.create.errors.type_size_is_invalid}")
         String type,

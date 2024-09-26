@@ -78,7 +78,7 @@ public class ClassRoom219LoadInfoController {
                 classRoom219LoadInfo.getResponsible(),
                 classRoom219LoadInfo.getDescription());
         ClassRoom219LoadInfo updatedClassRoom219LoadInfo = classRoom219LoadInfoService.updateClassRoom219LoadInfo(new ClassRoom219LoadInfo(
-                classRoom219LoadInfo.getId(), payload.localDate(), payload.localTime(), payload.type(), payload.responsible(), payload.description()));
+                classRoom219LoadInfo.getId(), payload.date(), payload.time(), payload.type(), payload.responsible(), payload.description()));
 //        telegramBot.sendMessage(Long.valueOf(chatId), message.concat(String.format("""
 //                        \nНовая нагрузка:
 //                            Дата: %s
