@@ -43,6 +43,17 @@ public class BasicAuthorizationFilter extends OncePerRequestFilter {
             final String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Basic ") || isNotValidCredentials(authHeader)) {
                 response.setStatus(403);
+                if (authHeader != null && isNotValidCredentials(authHeader)) {
+                    String jsonResponse = "{\"incorrectLoginOrPasswordError\": \"Неверно введены логин или пароль\"}";
+                    response.setContentType("application/json");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(jsonResponse);
+                } else {
+                    String jsonResponse = "Отсутствует токен доступа";
+                    response.setContentType("text/plain");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write(jsonResponse);
+                }
                 return;
             }
             User user = new User(username, password, List.of());

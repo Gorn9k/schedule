@@ -85,7 +85,7 @@ public class ClassRoom219LoadsInfoController {
 //                createdClassRoom219LoadInfo.getResponsible(),
 //                createdClassRoom219LoadInfo.getDescription()));
         notificationService.addTaskIfToday(createdClassRoom219LoadInfo);
-        return ResponseEntity.created(URI.create(request.getRequestURI().concat("/")
+        return ResponseEntity.created(URI.create("/class-room/number/219/load-info/"
                 .concat(String.valueOf(createdClassRoom219LoadInfo.getId())))).build();
     }
 }
