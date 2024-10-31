@@ -10,8 +10,6 @@ import java.util.Locale;
 
 public class DateService {
 
-    public static final DateTimeFormatter BACK_DATE_FORMAT = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd").toFormatter();
-    public static final DateTimeFormatter FRONT_DATE_FORMAT = new DateTimeFormatterBuilder().appendPattern("dd.MM.yyyy").toFormatter();
     public static final DateTimeFormatter FRONT_TIME_FORMAT = new DateTimeFormatterBuilder().appendPattern("HH:mm").toFormatter();
 
     public static String checkWeekType(LocalDate date) {
@@ -24,17 +22,5 @@ public class DateService {
             return "NUMERATOR";
         else
             return "DENOMINATOR";
-    }
-
-    public static LocalDate[] evaluateDatePeriod(LocalDate startDate) {
-        LocalDate firstDayOfWeek = startDate.with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
-        LocalDate lastDayOfWeek = firstDayOfWeek.plusDays(6);
-        return new LocalDate[] {firstDayOfWeek, lastDayOfWeek};
-    }
-
-    public static LocalDate[] evaluateDatePeriod() {
-        LocalDate firstDayOfWeek = LocalDate.now().with(WeekFields.of(Locale.getDefault()).dayOfWeek(), 1);
-        LocalDate lastDayOfWeek = firstDayOfWeek.plusDays(6);
-        return new LocalDate[] {firstDayOfWeek, lastDayOfWeek};
     }
 }

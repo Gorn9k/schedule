@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
@@ -21,13 +22,14 @@ public class NotificationService {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<Integer, ScheduledFuture<?>> scheduledTasks = new ConcurrentHashMap<>();
     private final Long chatId;
+    private final Integer[] timings;
 
     public NotificationService(ClassRoom219LoadInfoRepository classRoom219LoadInfoRepository,
                                TelegramBot telegramBot,
-                               @Value("${chat.id}") Long chatId) {
+                               @Value("${chat.id}") Long chatId, @Value("${notification_times_in_minutes}") Integer[] timings) {
         this.classRoom219LoadInfoRepository = classRoom219LoadInfoRepository;
         this.telegramBot = telegramBot;
-
+        this.timings = timings;
         this.chatId = chatId;
     }
 
@@ -52,13 +54,15 @@ public class NotificationService {
 
     public void scheduleTask(ClassRoom219LoadInfo load) {
         LocalDateTime eventTime = load.getLocalDate().atTime(load.getLocalTime());
-        LocalDateTime notifyTime = eventTime.minusMinutes(30);
-        long delay = LocalDateTime.now().until(notifyTime, TimeUnit.SECONDS.toChronoUnit());
+        Arrays.stream(timings).forEach(timing -> {
+            LocalDateTime notifyTime = eventTime.minusMinutes(timing);
+            long delay = LocalDateTime.now().until(notifyTime, TimeUnit.SECONDS.toChronoUnit());
 
-        if (delay > 0) {
-            ScheduledFuture<?> scheduledFuture = scheduler.schedule(() -> sendNotification(load), delay, TimeUnit.SECONDS);
-            scheduledTasks.put(load.getId(), scheduledFuture);
-        }
+            if (delay > 0) {
+                ScheduledFuture<?> scheduledFuture = scheduler.schedule(() -> sendNotification(load, timing), delay, TimeUnit.SECONDS);
+                scheduledTasks.put(load.getId(), scheduledFuture);
+            }
+        });
     }
 
     public void updateTask(ClassRoom219LoadInfo load) {
@@ -84,15 +88,15 @@ public class NotificationService {
         }
     }
 
-    private void sendNotification(ClassRoom219LoadInfo load) {
+    private void sendNotification(ClassRoom219LoadInfo load, Integer timing) {
         String message = String.format("""
-                Через 30 минут должно начаться мероприятие в 219 аудитории.
+                Через %s минут должно начаться мероприятие в 219 аудитории.
                 Подробная информация о нагрузке:
                     Дата: %s
                     Время: %s
                     Тип: %s
                     Ответственный: %s
-                    Комментарий: %s""", load.getLocalDate(), load.getLocalTime(), load.getType(), load.getResponsible(), load.getDescription());
+                    Комментарий: %s""", timing, load.getLocalDate(), load.getLocalTime(), load.getType(), load.getResponsible(), load.getDescription());
         telegramBot.sendMessage(this.chatId, message);
     }
 }

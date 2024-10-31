@@ -4,20 +4,16 @@ import by.vstu.schedule.models.DTO.Schedule219;
 import by.vstu.schedule.models.DTO.UpdateClassRoom219LoadInfo;
 import by.vstu.schedule.models.entities.ClassRoom219LoadInfo;
 import by.vstu.schedule.services.ClassRoom219LoadInfoService;
-import by.vstu.schedule.services.DateService;
 import by.vstu.schedule.services.NotificationService;
 import by.vstu.schedule.services.TelegramBot;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -79,18 +75,18 @@ public class ClassRoom219LoadInfoController {
                 classRoom219LoadInfo.getDescription());
         ClassRoom219LoadInfo updatedClassRoom219LoadInfo = classRoom219LoadInfoService.updateClassRoom219LoadInfo(new ClassRoom219LoadInfo(
                 classRoom219LoadInfo.getId(), payload.date(), payload.time(), payload.type(), payload.responsible(), payload.description()));
-//        telegramBot.sendMessage(Long.valueOf(chatId), message.concat(String.format("""
-//                        \nНовая нагрузка:
-//                            Дата: %s
-//                            Время: %s
-//                            Тип: %s
-//                            Ответственный: %s
-//                            Комментарий: %s""",
-//                updatedClassRoom219LoadInfo.getLocalDate(),
-//                updatedClassRoom219LoadInfo.getLocalTime(),
-//                updatedClassRoom219LoadInfo.getType(),
-//                updatedClassRoom219LoadInfo.getResponsible(),
-//                updatedClassRoom219LoadInfo.getDescription())));
+        telegramBot.sendMessage(Long.valueOf(chatId), message.concat(String.format("""
+                        \nНовая нагрузка:
+                            Дата: %s
+                            Время: %s
+                            Тип: %s
+                            Ответственный: %s
+                            Комментарий: %s""",
+                updatedClassRoom219LoadInfo.getLocalDate(),
+                updatedClassRoom219LoadInfo.getLocalTime(),
+                updatedClassRoom219LoadInfo.getType(),
+                updatedClassRoom219LoadInfo.getResponsible(),
+                updatedClassRoom219LoadInfo.getDescription())));
         notificationService.updateTask(updatedClassRoom219LoadInfo);
         return ResponseEntity.ok().build();
     }
@@ -99,19 +95,19 @@ public class ClassRoom219LoadInfoController {
     public ResponseEntity<Void> deleteClassRoom219LoadInfoAndRedirectToClassRooms219LoadInfoPage(@PathVariable("classRoom219LoadInfoId") Integer id, @Value("${chat.id}") String chatId) {
         ClassRoom219LoadInfo classRoom219LoadInfo = classRoom219LoadInfoService.getClassRoom219LoadInfoById(id);
         classRoom219LoadInfoService.deleteClassRoom219LoadInfo(classRoom219LoadInfo);
-//        telegramBot.sendMessage(Long.valueOf(chatId), String.format("""
-//                        Только что была удалена нагрузка на 219 аудиторию.
-//                        Удаленная нагрузка:
-//                            Дата: %s
-//                            Время: %s
-//                            Тип: %s
-//                            Ответственный: %s
-//                            Комментарий: %s""",
-//                classRoom219LoadInfo.getLocalDate(),
-//                classRoom219LoadInfo.getLocalTime(),
-//                classRoom219LoadInfo.getType(),
-//                classRoom219LoadInfo.getResponsible(),
-//                classRoom219LoadInfo.getDescription()));
+        telegramBot.sendMessage(Long.valueOf(chatId), String.format("""
+                        Только что была удалена нагрузка на 219 аудиторию.
+                        Удаленная нагрузка:
+                            Дата: %s
+                            Время: %s
+                            Тип: %s
+                            Ответственный: %s
+                            Комментарий: %s""",
+                classRoom219LoadInfo.getLocalDate(),
+                classRoom219LoadInfo.getLocalTime(),
+                classRoom219LoadInfo.getType(),
+                classRoom219LoadInfo.getResponsible(),
+                classRoom219LoadInfo.getDescription()));
         notificationService.deleteTask(classRoom219LoadInfo.getId());
         return ResponseEntity.noContent().build();
     }

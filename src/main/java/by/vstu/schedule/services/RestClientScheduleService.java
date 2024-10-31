@@ -1,9 +1,7 @@
 package by.vstu.schedule.services;
 
-import by.vstu.schedule.models.DTO.DayOfWeekLessonNumber;
 import by.vstu.schedule.models.DTO.Schedule;
 import by.vstu.schedule.models.DTO.ScheduleResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.client.RestClient;
@@ -12,7 +10,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static by.vstu.schedule.services.DateService.*;
+import static by.vstu.schedule.services.DateService.checkWeekType;
 
 @RequiredArgsConstructor
 public class RestClientScheduleService implements ScheduleService {
@@ -31,22 +29,17 @@ public class RestClientScheduleService implements ScheduleService {
             default -> throw new IllegalStateException("Unexpected value: " + frame);
         });
 
-        Set<Schedule> schedules = new HashSet<>() {{
-            add(new Schedule(1L,
-                    "122",
-                    1, 1, "FIRST", "123", "123", "123"));
-        }};
-//                this.restClient
-//                .get()
-//                .uri(String.format("/api/rooms/byRoomAndDate?weekType=%s,ALWAYS&startDate=%s&endDate=%s&roomNumbers=%s&frame=%s",
-//                        checkWeekType(startDate),
-//                        startDate,
-//                        endDate,
-//                        Arrays.toString(classes).replaceAll("[\\[\\] ]", ""),
-//                        frame))
-//                .retrieve()
-//                .body(new ParameterizedTypeReference<>() {
-//                });
+        Set<Schedule> schedules = this.restClient
+                .get()
+                .uri(String.format("/api/rooms/byRoomAndDate?weekType=%s,ALWAYS&startDate=%s&endDate=%s&roomNumbers=%s&frame=%s",
+                        checkWeekType(startDate),
+                        startDate,
+                        endDate,
+                        Arrays.toString(classes).replaceAll("[\\[\\] ]", ""),
+                        frame))
+                .retrieve()
+                .body(new ParameterizedTypeReference<>() {
+                });
 
         schedules = schedules.stream().sorted(Comparator.comparing(Schedule::day)).sorted(Comparator.comparing(Schedule::lessonNumber))
                 .collect(Collectors.toCollection(LinkedHashSet::new));

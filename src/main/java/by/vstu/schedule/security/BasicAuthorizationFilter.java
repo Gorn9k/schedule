@@ -1,10 +1,8 @@
 package by.vstu.schedule.security;
 
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,13 +40,14 @@ public class BasicAuthorizationFilter extends OncePerRequestFilter {
         if (requestMatcher.matches(request)) {
             final String authHeader = request.getHeader("Authorization");
             if (authHeader == null || !authHeader.startsWith("Basic ") || isNotValidCredentials(authHeader)) {
-                response.setStatus(403);
                 if (authHeader != null && isNotValidCredentials(authHeader)) {
+                    response.setStatus(403);
                     String jsonResponse = "{\"incorrectLoginOrPasswordError\": \"Неверно введены логин или пароль\"}";
                     response.setContentType("application/json");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write(jsonResponse);
                 } else {
+                    response.setStatus(401);
                     String jsonResponse = "Отсутствует токен доступа";
                     response.setContentType("text/plain");
                     response.setCharacterEncoding("UTF-8");
@@ -73,13 +72,5 @@ public class BasicAuthorizationFilter extends OncePerRequestFilter {
         String username = parts[0];
         String password = parts[1];
         return !this.username.equals(username) || !this.password.equals(password);
-    }
-
-    private String determineForwardUrl(HttpServletRequest request) {
-        return switch (request.getMethod()) {
-            case "POST", "PUT" -> request.getServletPath();
-            case "DELETE" -> request.getServletPath().replace("delete", "edit");
-            default -> "/default-forward-url";
-        };
     }
 }
