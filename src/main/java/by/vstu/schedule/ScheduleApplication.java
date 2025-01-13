@@ -1,9 +1,6 @@
 package by.vstu.schedule;
 
-import by.vstu.schedule.security.AuthorizeHttpRequestInterceptor;
 import by.vstu.schedule.security.BasicAuthorizationFilter;
-import by.vstu.schedule.services.AuthorizationService;
-import by.vstu.schedule.services.RestClientAuthorizationService;
 import by.vstu.schedule.services.RestClientScheduleService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -34,22 +31,12 @@ public class ScheduleApplication {
     @Bean
     public RestClientScheduleService restClientScheduleService(
             @Value("${service.schedule.uri}") String scheduleServiceBaseUri,
-            @Value("${service.authorization.admin.username}") String username, @Value("${service.authorization.admin.password}") String password,
-            @Value("${clientUsername}") String clientUsername, @Value("${clientPassword}") String clientPassword,
-            @Value("#{${classroomNumbers}}") Map<String, String[]> frame_classroomNumbers_Map,
-            AuthorizationService authorizationService) {
+            @Value("${service.schedule.token}") String authToken,
+            @Value("#{${classroomNumbers}}") Map<String, String[]> frame_classroomNumbers_Map) {
         return new RestClientScheduleService(RestClient.builder()
                 .baseUrl(scheduleServiceBaseUri)
-                .requestInterceptor(new AuthorizeHttpRequestInterceptor(authorizationService, username, password, clientUsername, clientPassword))
+                .defaultHeader("Authorization", "Bearer " + authToken)
                 .build(), frame_classroomNumbers_Map);
-    }
-
-    @Bean
-    public RestClientAuthorizationService restClientAuthorizationService(
-            @Value("${service.authorization.uri}") String authorizationServiceBaseUri) {
-        return new RestClientAuthorizationService(RestClient.builder()
-                .baseUrl(authorizationServiceBaseUri)
-                .build());
     }
 
     @Bean

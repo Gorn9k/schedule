@@ -31,7 +31,7 @@ public class RestClientScheduleService implements ScheduleService {
 
         Set<Schedule> schedules = this.restClient
                 .get()
-                .uri(String.format("/api/rooms/byRoomAndDate?weekType=%s,ALWAYS&startDate=%s&endDate=%s&roomNumbers=%s&frame=%s",
+                .uri(String.format("/rooms/byRoomAndDate?weekType=%s,ALWAYS&startDate=%s&endDate=%s&roomNumbers=%s&frame=%s",
                         checkWeekType(startDate),
                         startDate,
                         endDate,
